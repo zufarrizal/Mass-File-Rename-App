@@ -1,38 +1,93 @@
 import os
 import tkinter as tk
 from tkinter import filedialog, messagebox
+from tkinter import ttk
 
 class MassFileRenameApp:
     def __init__(self, master):
         self.master = master
         self.master.title("Mass File Rename App")
-        self.master.geometry("500x250")  # Ukuran fixed
 
-        self.label1 = tk.Label(master, text="1. Browse Directory")
-        self.label1.pack(pady=5)
+        self.form_frame = tk.Frame(master)
+        self.form_frame.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
 
-        self.browse_button = tk.Button(master, text="Browse", command=self.browse_directory)
-        self.browse_button.pack()
+        self.create_form_widgets()
+        self.create_button_widgets()
+        self.create_file_table()
+        self.populate_file_table()
+        self.setup_table_bindings()
 
-        self.label2 = tk.Label(master, text="2. Input the part of the name to be changed")
-        self.label2.pack(pady=5)
+    def create_form_widgets(self):
+        self.label1 = tk.Label(self.form_frame, text="1. Browse Directory")
+        self.label1.grid(row=0, column=0, sticky=tk.W, pady=5)
 
-        self.old_name_entry = tk.Entry(master)
-        self.old_name_entry.pack()
+        self.browse_button = tk.Button(self.form_frame, text="Browse", command=self.browse_directory)
+        self.browse_button.grid(row=0, column=1, sticky=tk.W, pady=5)
 
-        self.label3 = tk.Label(master, text="3. Enter a new file name")
-        self.label3.pack(pady=5)
+        self.label2 = tk.Label(self.form_frame, text="2. Input the part of the name to be changed")
+        self.label2.grid(row=1, column=0, sticky=tk.W, pady=5)
 
-        self.new_name_entry = tk.Entry(master)
-        self.new_name_entry.pack()
+        self.old_name_entry = tk.Entry(self.form_frame)
+        self.old_name_entry.grid(row=1, column=1, sticky=tk.W, pady=5)
 
-        self.rename_button = tk.Button(master, text="Ubah Nama", command=self.rename_files)
-        self.rename_button.pack(pady=10)
+        self.label3 = tk.Label(self.form_frame, text="3. Enter a new file name")
+        self.label3.grid(row=2, column=0, sticky=tk.W, pady=5)
+
+        self.new_name_entry = tk.Entry(self.form_frame)
+        self.new_name_entry.grid(row=2, column=1, sticky=tk.W, pady=5)
+
+        self.label4 = tk.Label(self.form_frame, text="4. Enter file extension filter (optional)")
+        self.label4.grid(row=3, column=0, sticky=tk.W, pady=5)
+
+        self.extension_entry = tk.Entry(self.form_frame)
+        self.extension_entry.grid(row=3, column=1, sticky=tk.W, pady=5)
+
+    def create_button_widgets(self):
+        self.button_frame = tk.Frame(self.master)
+        self.button_frame.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
+
+        self.rename_button = tk.Button(self.button_frame, text="Rename", command=self.rename_files)
+        self.rename_button.pack(side=tk.LEFT, padx=5)
+
+        self.undo_button = tk.Button(self.button_frame, text="Undo", command=self.undo_rename, state=tk.DISABLED)
+        self.undo_button.pack(side=tk.LEFT, padx=5)
+
+    def create_file_table(self):
+        self.table_frame = tk.Frame(self.master)
+        self.table_frame.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
+
+        self.file_table = ttk.Treeview(self.table_frame, columns=("Name"))
+        self.file_table.heading("#0", text="No.")
+        self.file_table.column("#0", width=50)
+        self.file_table.heading("Name", text="File Name")
+
+        scrollbar = ttk.Scrollbar(self.table_frame, orient="vertical", command=self.file_table.yview)
+        self.file_table.configure(yscroll=scrollbar.set)
+
+        scrollbar.pack(side="right", fill="y")
+        self.file_table.pack(side="left", fill="both", expand=True)
+
+    def populate_file_table(self):
+        if hasattr(self, 'selected_directory'):
+            file_names = os.listdir(self.selected_directory)
+            for idx, file_name in enumerate(file_names, start=1):
+                self.file_table.insert("", "end", text=str(idx), values=(file_name,))
+
+    def setup_table_bindings(self):
+        self.file_table.bind("<Double-1>", self.on_table_click)
+
+    def on_table_click(self, event):
+        item = self.file_table.selection()[0]
+        file_name = self.file_table.item(item, "values")[0]
+        self.old_name_entry.delete(0, tk.END)
+        self.old_name_entry.insert(0, file_name)
 
     def browse_directory(self):
         self.selected_directory = filedialog.askdirectory()
         if self.selected_directory:
             messagebox.showinfo("Info", "Directory has been selected: {}".format(self.selected_directory))
+            self.file_table.delete(*self.file_table.get_children())
+            self.populate_file_table()
 
     def rename_files(self):
         if not hasattr(self, 'selected_directory'):
@@ -41,23 +96,44 @@ class MassFileRenameApp:
 
         old_name = self.old_name_entry.get()
         new_name = self.new_name_entry.get()
+        extension_filter = self.extension_entry.get()
 
         if not old_name or not new_name:
             messagebox.showerror("Error", "Please enter the old and new file names!")
             return
 
+        self.old_names = []
+        self.new_names = []
+
         for filename in os.listdir(self.selected_directory):
-            if old_name in filename:
+            if old_name in filename and filename.endswith(extension_filter):
                 new_filename = filename.replace(old_name, new_name)
                 try:
                     os.rename(os.path.join(self.selected_directory, filename),
                               os.path.join(self.selected_directory, new_filename))
+                    self.old_names.append(filename)
+                    self.new_names.append(new_filename)
                 except Exception as e:
                     messagebox.showerror("Error", f"Failed to change file name: {e}")
         messagebox.showinfo("Info", "File renaming is complete!")
+        self.undo_button.config(state=tk.NORMAL)
+
+    def undo_rename(self):
+        if hasattr(self, 'old_names') and hasattr(self, 'new_names'):
+            for old_name, new_name in zip(self.old_names, self.new_names):
+                try:
+                    os.rename(os.path.join(self.selected_directory, new_name),
+                              os.path.join(self.selected_directory, old_name))
+                except Exception as e:
+                    messagebox.showerror("Error", f"Failed to undo file name change: {e}")
+            messagebox.showinfo("Info", "Undo successful!")
+            self.old_names = []
+            self.new_names = []
+            self.undo_button.config(state=tk.DISABLED)
+        else:
+            messagebox.showerror("Error", "No renaming operation to undo!")
 
 if __name__ == "__main__":
     root = tk.Tk()
-    root.resizable(False, False)  # Membuat ukuran fixed
     app = MassFileRenameApp(root)
     root.mainloop()
