@@ -1,30 +1,35 @@
-<h1>Mass File Renaming Using Python</h1>
+# Mass File Rename App
 
-<p>In this repository, you'll find a Python script for renaming files in bulk.</p>
+This is a simple Python GUI application for mass file renaming using the Tkinter library.
 
-<h2>Description</h2>
+## Features
 
-<p>This Python script provides a simple graphical user interface (GUI) for renaming multiple files simultaneously. The script allows users to:</p>
+- Browse a directory and view files in a table format.
+- Input the part of the file name to be changed and the new file name.
+- Optionally, specify a file extension filter to narrow down the files to be renamed.
+- Rename multiple files in bulk.
+- Undo the renaming operation to revert files back to their original names.
+- Error handling for invalid inputs and file operations.
 
-<ol>
-  <li>Browse the directory where the files are located.</li>
-  <li>Input the old file name pattern.</li>
-  <li>Specify the new file name pattern.</li>
-  <li>Click a button to initiate the renaming process.</li>
-</ol>
+## Requirements
 
-<h2>How to Use</h2>
+- Python 3.x
+- Tkinter (usually included in standard Python distributions)
 
-<ol>
-  <li>Clone this repository to your local machine.</li>
-  <li>Run the Python script.</li>
-  <li>Click the "Browse" button to select the directory containing the files you want to rename.</li>
-  <li>Enter the old file name pattern and the new file name pattern.</li>
-  <li>Click the "Rename" button to execute the renaming process.</li>
-</ol>
+## Usage
 
-<p>That's it! The script will rename all files in the specified directory that match the old file name pattern with the new file name pattern.</p>
+1. Clone the repository or download the source code.
+2. Install Python if you haven't already.
+3. Run the `mass_file_rename.py` script.
+4. Browse for the directory containing the files you want to rename.
+5. Input the old and new file names, and optionally, the file extension filter.
+6. Click the "Rename" button to perform the renaming operation.
+7. Click the "Undo" button to revert the renaming operation if needed.
 
-<h2>Contributing</h2>
+## Contributing
 
-<p>Contributions are welcome! If you have suggestions or improvements, please feel free to open an issue or create a pull request.</p>
+Contributions are welcome! If you find any bugs or have suggestions for improvements, feel free to open an issue or create a pull request.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
