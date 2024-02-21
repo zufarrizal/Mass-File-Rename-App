@@ -20,7 +20,7 @@ This is a simple Python GUI application for mass file renaming using the Tkinter
 
 1. Clone the repository or download the source code.
 2. Install Python if you haven't already.
-3. Run the `mass_file_rename.py` script.
+3. Run the `rename.py` script.
 4. Browse for the directory containing the files you want to rename.
 5. Input the old and new file names, and optionally, the file extension filter.
 6. Click the "Rename" button to perform the renaming operation.
