@@ -5,7 +5,8 @@ This is a simple Python GUI application for mass file renaming using the Tkinter
 ## Features
 
 - Browse a directory and view files in a table format.
-- Input the part of the file name to be changed and the new file name. You can double click on the table name to input the file name
+- Input the part of the file name to be changed and the new file name.
+- You can double click on the table name to input the file name
 - Optionally, specify a file extension filter to narrow down the files to be renamed.
 - Rename multiple files in bulk.
 - Undo the renaming operation to revert files back to their original names.
