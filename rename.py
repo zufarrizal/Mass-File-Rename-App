@@ -116,6 +116,7 @@ class MassFileRenameApp:
                 except Exception as e:
                     messagebox.showerror("Error", f"Failed to change file name: {e}")
         messagebox.showinfo("Info", "File renaming is complete!")
+        self.reload_file_table()  # Panggil metode reload setelah operasi selesai
         self.undo_button.config(state=tk.NORMAL)
 
     def undo_rename(self):
@@ -129,9 +130,14 @@ class MassFileRenameApp:
             messagebox.showinfo("Info", "Undo successful!")
             self.old_names = []
             self.new_names = []
+            self.reload_file_table()  # Panggil metode reload setelah operasi selesai
             self.undo_button.config(state=tk.DISABLED)
         else:
             messagebox.showerror("Error", "No renaming operation to undo!")
+
+    def reload_file_table(self):
+        self.file_table.delete(*self.file_table.get_children())
+        self.populate_file_table()
 
 if __name__ == "__main__":
     root = tk.Tk()
