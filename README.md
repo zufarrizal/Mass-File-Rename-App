@@ -30,3 +30,6 @@ This is a simple Python GUI application for mass file renaming using the Tkinter
 ## Contributing
 
 Contributions are welcome! If you find any bugs or have suggestions for improvements, feel free to open an issue or create a pull request.
+
+## License
+The license <a href="https://github.com/zufarrizal/Mass-File-Rename-App?tab=MIT-1-ov-file">license agreement</a>
